@@ -26,10 +26,10 @@ rhs = @(x,l) sin(pi*x).*(6*x - 2) - pi^2.*x.^2.*sin(pi*x).*(x - 1) +...
 w_0 = @(x) sin(pi*x).*(- x.^3 + x.^2); 
 
 %Gamma
-gam = 0; 
+gam = 100; 
 
 %Number of Newton Method steps
-L = 3; 
+L = 1; 
 %set up grid
 x = 0:h:1; 
 true= w_true(x); 
@@ -37,7 +37,7 @@ f = rhs(x,gam);
 w0 = w_0(x); 
 
 %initial condition
-w0 = 0.*x;
+w0=0.01*w0;
 
 %set up interior
 f_interior = f(2:end-1); 
@@ -51,15 +51,12 @@ boundary = zeros(size(x));
 error1 = w0 - true ;
 err = max(abs(error1));
 counter = 1; 
-  errorvect(counter) = max(abs(w0-true)); 
-err = 1; 
-while err > tol
+while err > tol 
+    errorvect(counter) = err; 
     [v,residual] = vcycle_nl(h,f_interior,v, nu1, nu2,gam,L,boundary);
-    residual;
-    err = abs(max(residual));
-    %err = norm(residual)*h^(0.5);
+    residual
+    err = norm(residual)*h^(0.5)
     counter = counter+1; 
-      errorvect(counter) = err; 
    
 end
  plot(x,true); 
